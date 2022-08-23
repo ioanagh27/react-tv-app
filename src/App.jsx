@@ -2,25 +2,30 @@ import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import './App.css';
 
-import ShowCard from './component/ShowCard.jsx'
+import {ShowCard, SearchForm }from './component';
 
 
 const App = () => {
     const [showData, setShowData] = useState([]);
+    const [searchString, setSearchString] = useState("Friends")
 
     useEffect(() => {
 
         async function searchApi() {
-            const result = await axios.get("https://api.tvmaze.com/search/shows?q=girls")    ;
+            const result = await axios.get(`https://api.tvmaze.com/search/shows?q=${searchString}`)    ;
             setShowData(result.data)        
         }
 
         searchApi();
 
-    }, [])
+    }, [searchString])
+
+    function handleSearch(userInput) {
+        setSearchString(userInput)
+    }
     
     return  <>
-            <form id="search-form"></form>
+            <SearchForm handleSearchSubmission={handleSearch}/>
             {showData.map((s)=> <ShowCard key={s["show"].id} data={s["show"]} />)}
             </>
 
